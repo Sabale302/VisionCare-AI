@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Eye Disease Prediction</title>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header Section -->
+    <div class="bg-teal-600 p-6 text-white text-center bg-green-900">
+        <h1 class="text-4xl font-bold">Eye Disease Prediction</h1>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="p-6 bg-green-100">
+        <div class="text-center">
+            <h1 class="text-3xl font-semibold text-teal-700 mb-4">Welcome to VisionCare AI: Your Partner in Eye Care</h1>
+            <p class="text-lg text-gray-700 mb-6">
+                Our Eye Disease Classification platform is designed to help you stay ahead of potential eye health issues. Powered by cutting-edge machine learning technology, the system allows you to:
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-lg text-gray-700 mb-6">
+                <li><strong>Classify Eye Diseases:</strong> Upload an eye image or input symptoms, and the platform will predict potential eye conditions like cataracts, glaucoma, or retinal disorders with remarkable accuracy.</li>
+                <li><strong>Symptom-Based Diagnosis:</strong> Not sure what the problem is? Enter your symptoms, and we’ll guide you toward possible causes and solutions.</li>
+                <li><strong>Preventive Measures:</strong> Early detection is critical. Alongside diagnoses, the platform provides tailored recommendations and preventive measures to protect and preserve your vision.</li>
+            </ul>
+            <div class="space-x-4">
+                <a href="#section3" 
+                class="inline-block px-6 py-3 text-white font-semibold rounded-md border-2 border-green-600 bg-green-600 hover:bg-white hover:text-green-600 transition duration-300">
+                Check by Symptoms
+                </a>
+
+                <a href="#section2" 
+                class="inline-block px-6 py-3 text-teal-700 font-semibold rounded-md border-2 border-green-600 hover:bg-green-600 hover:text-white transition duration-300">
+                Upload Image
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Upload Image -->
+    <div class="bg-teal-50 p-6" id="section2">
+        <h2 class="text-2xl font-semibold text-teal-700 mb-4">Upload an image</h2>
+        <form id="uploadForm">
+            <p class="text-lg text-gray-700 mb-4">Instructions:</p>
+            <ul class="list-disc list-inside space-y-2 text-lg text-gray-700 mb-6">
+                <li>Upload an image of an eye to predict the disease.</li>
+                <li>Supported classes: cataract, glaucoma, diabetic retinography.</li>
+                <li>Supported image formats: JPEG, PNG</li>
+                <li>Maximum file size: 5 MB</li>
+                <li>For best results, upload an image with a resolution of 224x224 pixels. Click the button below to upload an image.</li>
+                <li>After uploading the image, the predicted class will be displayed.</li>
+            </ul>
+            <div class="mb-6">
+                <!-- File upload label -->
+                <label for="file-upload" 
+                        class="block text-lg bg-green-600 text-white font-semibold rounded-md px-4 py-2 text-center cursor-pointer shadow-md hover:bg-green-700 transition duration-300">
+                    <i class="fas fa-cloud-upload-alt mr-2"></i> Choose File
+                </label>
+
+                <!-- Hidden file input -->
+                <input type="file" 
+                    id="file-upload" 
+                    name="file" 
+                    accept="image/*" 
+                    required 
+                    class="hidden" 
+                    onchange="document.getElementById('file-name').textContent = this.files[0]?.name || 'No file selected';">
+
+                <!-- Display selected file name -->
+                <div class="mt-2 flex items-center p-3 border border-green-400 rounded-md bg-green-50">
+                    <i class="fas fa-file-alt text-green-600 mr-2"></i>
+                    <span id="file-name" class="text-gray-700">No file selected</span>
+                </div>
+            </div>
+            <button type="submit" 
+                    class="px-6 py-3 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 hover:shadow-lg active:shadow-sm active:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 transition duration-300">
+                Predict
+            </button>
+    
+            <div id="result" class="mt-6 font-semibold"></div>
+        </form>
+    </div>
+
+    <!-- Section 3: Check by Symptoms -->
+    <div class="bg-teal-100 p-6 mt-6" id="section3">
+        <h2 class="text-2xl font-semibold text-teal-700 mb-4">Check by Symptoms</h2>
+        
+        <h1 class="text-3xl font-bold mb-4 text-center text-teal-700">Eye Health Advice</h1>
+        
+        <div class="bg-green-100 text-black p-6 rounded-lg shadow-xl space-y-6">
+            <label for="symptoms" class="block mb-2 font-semibold text-teal-700">Enter Eye Symptoms:</label>
+            <textarea 
+                id="symptoms" 
+                class="w-full p-3 border border-teal-300 rounded-md focus:ring focus:ring-teal-300"
+                rows="4" 
+                placeholder="Enter symptoms like blurred vision, dry eyes, eye pain, etc."
+            ></textarea>
+            
+            <button 
+                class="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition duration-300"
+                onclick="handleSubmit(event)"
+            >
+                Get Remedies and Nutrition Advice
+            </button>
+        </div>
+    
+        <!-- Loading Message -->
+        <div id="loading-message" class="text-center text-teal-600 hidden">
+            Predicting... Please wait.
+        </div>
+    
+        <!-- Results Section -->
+        <div id="results" class="bg-green-100 text-black p-6 rounded-lg shadow-xl mt-6 hidden">
+            <h2 class="text-3xl font-semibold text-center text-teal-700">Your Eye Health Recommendations</h2>
+            
+            <div id="remedies" class="mb-4">
+                <h3 class="text-xl font-semibold text-teal-600">Remedies:</h3>
+                <p id="remedy-text" class="text-lg"></p>
+            </div>
+    
+            <div>
+                <h3 class="text-xl font-semibold text-teal-600">Nutritional Advice:</h3>
+                <p id="nutrition-text" class="text-lg"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="bg-teal-600 p-4 text-white text-center mt-6">
+        <p>&copy; 2021 Eye Disease Prediction</p>
+    </div>
+
+    <script>
+        const form = document.querySelector("#uploadForm");
+        const resultDiv = document.querySelector("#result");
+    
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+    
+            const fileInput = document.querySelector("#file-upload");
+            const file = fileInput.files[0];
+    
+            if (!file) {
+                resultDiv.textContent = "Please select an image.";
+                return;
+            }
+    
+            const formData = new FormData();
+            formData.append("file", file);
+    
+            resultDiv.textContent = "Predicting... Please wait.";
+    
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    body: formData
+                });
+    
+                if (!response.ok) {
+                    throw new Error("Prediction failed.");
+                }
+    
+                const data = await response.json();
+                resultDiv.textContent = `Prediction: ${data.predicted_class}`;
+            } catch (error) {
+                console.error("Error:", error);
+                resultDiv.textContent = "An error occurred while predicting.";
+            }
+        });
+    </script>    
+
+</body>
+</html>
