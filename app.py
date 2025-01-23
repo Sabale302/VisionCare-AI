@@ -61,7 +61,7 @@ def predict():
        
 
         # Add the version parameter to the model API request URL 
-        model_url = 'https://eu-de.ml.cloud.ibm.com/ml/v4/deployments/visioncare_ai/predictions?version=2021-05-01'
+        model_url = 'https://au-syd.ml.cloud.ibm.com/ml/v4/deployments/visioncare_ai_v1/predictions?version=2021-05-01'
 
         # Make the API request to the ML model
         response_scoring = requests.post(
