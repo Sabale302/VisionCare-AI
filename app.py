@@ -30,7 +30,6 @@ class_labels = {
     3: "Cataract"
 }
 
-
 @FlaskApp.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -57,9 +56,8 @@ def predict():
         # Prepare input data
         input_data = np.expand_dims(image_array, axis=0)
         payload_scoring = {"input_data": [{"values": input_data.tolist()}]}
-       
 
-        # Add the version parameter to the model API request URL 
+        # Add the version parameter to the model API request URL
         model_url = 'https://au-syd.ml.cloud.ibm.com/ml/v4/deployments/visioncare_ai_v1/predictions?version=2021-05-01'
 
         # Make the API request to the ML model
@@ -77,19 +75,23 @@ def predict():
         predictions = response_json.get('predictions', [])
         if not predictions or not predictions[0].get('values'):
             raise ValueError("Invalid response: No predictions found")
-        values = predictions[0]['values'][0]
-        prediction_values = values[:-1]  # Probabilities
-        predicted_index = int(values[-1])  # Index
-        predicted_label = class_labels.get(predicted_index, "Unknown")
 
+        # Access the first sublist in values
+        values = predictions[0]['values'][0]
+
+        # Extract probabilities and predicted index
+        prediction_values = values[0]  # Probabilities (list)
+        predicted_index = values[1]  # Predicted index (int)
+
+        # Map the predicted index to a class label
+        predicted_label = class_labels.get(predicted_index, "Unknown")
 
         # Log and return the prediction
         print("Prediction values:", prediction_values)
         print("Predicted index:", predicted_index)
         print("Predicted label:", predicted_label)
 
-        return jsonify({"predicted_class": predicted_label})
-
+        return jsonify({"predicted_class": predicted_label, "probabilities": prediction_values})
 
     except Exception as e:
         print(f"Error occurred: {e}")
