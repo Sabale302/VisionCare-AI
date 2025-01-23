@@ -9,7 +9,6 @@ from werkzeug.utils import secure_filename
 
 # Load API configuration
 API_KEY = "DR7ojKd15aBOiYF6ba37UDSwBVcmvQqtq9BdkyCxnHMa"
-DEPLOYMENT_URL = "https://eu-de.ml.cloud.ibm.com/ml/v4/deployments/9c7d6f4b-3d7b-4d0b-8b6d-8f5c0a6b2f1e/predictions"
 
 # Get the authentication token
 token_response = requests.post(
